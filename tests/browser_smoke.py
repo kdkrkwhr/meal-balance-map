@@ -10,9 +10,15 @@ with sync_playwright() as p:
         page = browser.new_page(viewport={"width": width, "height": height})
         errors = []
         page.on("pageerror", lambda e: errors.append(str(e)))
+        # Automated CI never fetches community tiles (OSMF forbids headless scans).
+        page.route("https://tile.openstreetmap.org/**", lambda route: route.fulfill(
+            status=200, content_type="image/svg+xml",
+            body='<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256"><rect width="256" height="256" fill="#e7e9df"/></svg>'))
         page.goto((root / "index.html").as_uri())
         page.locator(".restaurant-card").first.wait_for()
         assert page.locator(".restaurant-card").count() == 6
+        assert page.locator(".leaflet-marker-icon").count() == 6
+        assert page.locator(".leaflet-control-attribution").is_visible()
         assert page.evaluate("document.documentElement.scrollWidth <= innerWidth"), "horizontal overflow"
         if label == "mobile":
             assert page.locator(".map").is_visible()
@@ -28,7 +34,7 @@ with sync_playwright() as p:
         page.locator("#reset").click()
         if label == "mobile":
             page.locator("#mobile-map-toggle").click()
-            page.locator("[data-select=fish]").click()
+            page.locator('.leaflet-marker-icon[title="바다한상 (가상 식당)"]').click()
             assert "바다한상" in page.locator("#map-selection").inner_text()
             page.screenshot(path=str(root / "test-results/mobile-map.png"), full_page=True)
         assert not errors, errors

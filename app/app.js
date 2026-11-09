@@ -37,11 +37,12 @@
     const p=list.find(p=>p.id===state.selected);
     $('map-selection').hidden=!p;
     if(p)$('map-selection').innerHTML=`<div class="selection-main"><div class="food-art">${art(p)}</div><div><h3>${p.name}</h3><p>${p.menu}</p></div></div><div class="selection-action"><span>${money(p.price)} · 예시 가격</span><button data-detail="${p.id}">상세 보기 ↗</button></div>`;
+    window.MealMap?.render(list,state.selected);
     $('live-status').textContent=`조건에 맞는 가상 메뉴 ${list.length}개`;
   }
   function reset(){Object.assign(state,{query:'',tags:[],budget:999999,district:'전체',sort:'default',savedOnly:false});$('search').value='';$('budget').value='999999';$('district').value='전체';$('sort').value='default';render();}
   $('results').addEventListener('click',e=>{const s=e.target.closest('[data-save]');if(s){toggleSave(s.dataset.save);document.querySelector(`[data-save="${s.dataset.save}"]`)?.focus();return;}const d=e.target.closest('[data-detail]');if(d)showDetail(d.dataset.detail);if(e.target.closest('#empty-reset'))reset();});
-  $('map-pins').addEventListener('click',e=>{const b=e.target.closest('[data-select]');if(b){state.selected=b.dataset.select;render();document.querySelector(`[data-select="${state.selected}"]`)?.focus();document.querySelector(`[data-card="${state.selected}"]`)?.scrollIntoView({block:'nearest'});}});
+  $('map-pins').addEventListener('click',e=>{const b=e.target.closest('[data-select]');if(b){state.selected=b.dataset.select;render();document.querySelector(`[data-select="${state.selected}"]`)?.focus();if(window.innerWidth>760)document.querySelector(`[data-card="${state.selected}"]`)?.scrollIntoView({block:'nearest'});}});
   $('map-selection').addEventListener('click',e=>{const b=e.target.closest('[data-detail]');if(b)showDetail(b.dataset.detail);});
   $('search-form').addEventListener('submit',e=>{e.preventDefault();state.query=$('search').value;render();});
   $('search').addEventListener('input',()=>{state.query=$('search').value;render();});
@@ -54,7 +55,7 @@
   $('ask-ai').addEventListener('click',()=>{$('ai-feedback').textContent='';openDialog('ai-dialog');$('ai-input').focus();});
   document.querySelectorAll('[data-prompt]').forEach(b=>b.addEventListener('click',()=>{$('ai-input').value=b.dataset.prompt;$('ai-input').focus();}));
   $('ai-form').addEventListener('submit',e=>{e.preventDefault();const tags=M.interpret($('ai-input').value);if(!tags.length){$('ai-feedback').textContent='이 모의 화면은 채소·따뜻한·단백질·맵지 않은 조건만 알아볼 수 있어요.';return;}state.tags=tags;state.query='';state.savedOnly=false;$('search').value='';render();closeDialog('ai-dialog');$('live-status').textContent='모의 조건 해석: '+tags.map(t=>M.tagNames[t]).join(', ');});
-  function zoom(n){state.zoom=Math.max(.85,Math.min(1.5,n));$('map-world').style.transform=`scale(${state.zoom})`;$('zoom-in').disabled=state.zoom>=1.5;$('zoom-out').disabled=state.zoom<=.85;}
+  function zoom(n){if(window.MealMap){window.MealMap.zoom(n===1?0:(n>state.zoom?1:-1));return;}state.zoom=Math.max(.85,Math.min(1.5,n));$('map-world').style.transform=`scale(${state.zoom})`;$('zoom-in').disabled=state.zoom>=1.5;$('zoom-out').disabled=state.zoom<=.85;}
   $('zoom-in').addEventListener('click',()=>zoom(state.zoom+.15));$('zoom-out').addEventListener('click',()=>zoom(state.zoom-.15));$('recenter').addEventListener('click',()=>zoom(1));
   $('mobile-map-toggle').addEventListener('click',()=>{const show=document.body.classList.toggle('map-mode');$('mobile-map-toggle').textContent=show?'지도 보기 ↑':'메뉴 목록 ↓';(show?$('results'):document.querySelector('.map')).scrollIntoView({behavior:'smooth',block:'start'});});
   function showDetail(id){

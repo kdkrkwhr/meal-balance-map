@@ -47,3 +47,12 @@
  .food-art{width:64px;height:66px}.card-open h3{font-size:15px}.card-menu{font-size:12px}
  .mobile-map-toggle{font-size:11px;padding:11px 18px;bottom:16px}
 }
+#live-map{position:absolute;inset:0;z-index:0;background:#ebece5}
+.real-map .map-canvas{display:none}.real-map .map-top,.real-map .map-controls,.real-map .map-selection,.real-map .map-caption{z-index:500}
+.real-map .map-caption{bottom:28px;pointer-events:none}.real-map .map-selection{bottom:64px}
+.leaflet-control-attribution{font-size:10px!important;max-width:100%;background:#fff!important}
+.meal-marker{background:none;border:0}.meal-marker>span{display:flex;align-items:center;justify-content:center;gap:5px;height:34px;padding:0 8px;background:#fff;border:1px solid #d6decf;border-radius:22px;box-shadow:0 3px 10px #233f2426;white-space:nowrap;font-size:11px;color:#244b3c}
+.meal-marker small{font-size:8px;color:#68795e}.meal-marker.is-selected>span{background:#244b3c;color:white;border-color:#244b3c}.meal-marker.is-selected small{color:#d8e6c9}
+.meal-marker:focus{outline:3px solid #94b166;outline-offset:3px;border-radius:20px}
+#map-error{position:absolute;z-index:550;top:64px;left:16px;right:65px;background:#fff7df;padding:10px;font-size:11px;border-radius:8px}
+@media(max-width:760px){.real-map .map-selection{bottom:52px}.real-map .map-caption{bottom:26px}.real-map .leaflet-control-attribution{font-size:8px!important}.meal-marker>span{font-size:10px}}
