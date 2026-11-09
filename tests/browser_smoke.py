@@ -14,6 +14,9 @@ with sync_playwright() as p:
         page.locator(".restaurant-card").first.wait_for()
         assert page.locator(".restaurant-card").count() == 6
         assert page.evaluate("document.documentElement.scrollWidth <= innerWidth"), "horizontal overflow"
+        if label == "mobile":
+            assert page.locator(".map").is_visible()
+            assert page.locator(".map").bounding_box()["y"] < height / 2, "map must appear above fold"
         page.screenshot(path=str(root / f"test-results/{label}.png"), full_page=True)
         page.locator("#search").fill("고등어")
         assert page.locator(".restaurant-card").count() == 1
