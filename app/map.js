@@ -23,7 +23,10 @@
         L.marker(coords[p.id],{
           title:p.name+' (가상 식당)',alt:p.name+' 가상 메뉴 선택',
           icon:L.divIcon({className:'meal-marker '+(p.id===selected?'is-selected':''),html:'<span>'+p.name+'<small>가상</small></span>',iconSize:[104,34],iconAnchor:[52,34]})
-        }).on('click',()=>document.querySelector('[data-select="'+p.id+'"]')?.click()).addTo(layer);
+        }).on('click',()=>{
+          document.querySelector('[data-select="'+p.id+'"]')?.click();
+          document.querySelector('.meal-marker[title="'+p.name+' (가상 식당)"]')?.focus({preventScroll:true});
+        }).addTo(layer);
       }
     },
     zoom(direction){if(direction===0)map.setView(center,14);else if(direction>0)map.zoomIn();else map.zoomOut();}

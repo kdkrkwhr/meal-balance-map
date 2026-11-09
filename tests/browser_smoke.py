@@ -24,6 +24,9 @@ with sync_playwright() as p:
             assert page.locator(".map").is_visible()
             assert page.locator(".map").bounding_box()["y"] < height / 2, "map must appear above fold"
         page.screenshot(path=str(root / f"test-results/{label}.png"), full_page=True)
+        page.locator("#search").fill("없는메뉴123")
+        assert not page.locator("#map-selection").is_visible(), "empty results must hide stale selected menu"
+        assert page.locator(".leaflet-marker-icon").count() == 0
         page.locator("#search").fill("고등어")
         assert page.locator(".restaurant-card").count() == 1
         page.locator("[data-detail=fish]").first.click()

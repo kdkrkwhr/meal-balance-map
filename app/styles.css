@@ -56,3 +56,4 @@
 .meal-marker:focus{outline:3px solid #94b166;outline-offset:3px;border-radius:20px}
 #map-error{position:absolute;z-index:550;top:64px;left:16px;right:65px;background:#fff7df;padding:10px;font-size:11px;border-radius:8px}
 @media(max-width:760px){.real-map .map-selection{bottom:52px}.real-map .map-caption{bottom:26px}.real-map .leaflet-control-attribution{font-size:8px!important}.meal-marker>span{font-size:10px}}
+.map-selection[hidden]{display:none}
